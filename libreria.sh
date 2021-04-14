@@ -24,9 +24,7 @@ function f_crear_directorio {
 #preguntará al usuario el nombre del dispositivo de bloques a montar
 
 function f_montar_dispositivo {
-	echo "Dime el nombre del dispositivo a montar."
-	read dispositivo
-	mount $dispositivo $directorio
+	mount $nombre $directorio
 }
 
 
@@ -35,21 +33,14 @@ function f_montar_dispositivo {
 #en el directorio. Si el directorio no existe lo creará y si el dispositivo no está
 #montado lo montará.
 
-function f_nombre_dispositivo {
+function f_comprobacion_inicial {
 	f_existe_directorio
 	resul=`echo $?`
-	if [[ $resul = 0 ]]; then
-		var2=$(mount | egrep ' '$directorio' ' | awk '{print $1}')
-		if [[ -z $var2 ]]; then
-			echo "Dime el nombre del dispositivo a montar"
-			f_montar_dispositivo
-		else
-			echo $var2
-		fi
-	else
-		f_crear_directorio
+	if [[ $resul = 1 ]]; then
+		f_crear_directorio		
 	fi
-
+	if [[ $(df -h | egrep $nombre;echo $?) = 1 ]]; then
+		f_montar_dispositivo
 }
 #Para poder continuar, es necesario ser root, por lo que la siguiente función
 #nos indicará si eres root. Si es así, te permitirá continuar y debolverá 0. 
@@ -71,7 +62,6 @@ function f_soyroot {
 #cual es el problema.
 
 function f_UUID {
-	nombre=$(f_nombre_dispositivo)
 	UUID=$(blkid -o value -s UUID $nombre)
 	if [[ -z $UUID ]]
 		then

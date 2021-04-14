@@ -23,6 +23,8 @@ f_comprobar_paquete $paquete2
 #en él.
 echo "Dime el punto de montaje del dispositivo"
 read directorio
+echo "Dime el nombre del dispositivo"
+read nombre
 f_UUID
 
 #Tras esto, vamos a usar el UUID obtenido para modificar el fichero fstab. Para
