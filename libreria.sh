@@ -28,10 +28,8 @@ function f_montar_dispositivo {
 }
 
 
-#La siguiente función usa la anterior para obtener el lugar de montaje. Usando también
-#el resultado de la anterior función, nos dará el nombre del dispositivo montado
-#en el directorio. Si el directorio no existe lo creará y si el dispositivo no está
-#montado lo montará.
+#La siguiente función usa a la anterior para comprobar si existe un directorio o no, y si 
+#no es así crearlo. También comprueba si el dispositivo está montado, y si no es así lo monta.
 
 function f_comprobacion_inicial {
 	f_existe_directorio
@@ -41,6 +39,7 @@ function f_comprobacion_inicial {
 	fi
 	if [[ $(df -h | egrep $nombre;echo $?) = 1 ]]; then
 		f_montar_dispositivo
+	fi
 }
 #Para poder continuar, es necesario ser root, por lo que la siguiente función
 #nos indicará si eres root. Si es así, te permitirá continuar y debolverá 0. 
