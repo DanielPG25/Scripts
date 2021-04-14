@@ -109,7 +109,7 @@ function f_comprobar_paquete {
 }
 
 function f_añadir_fstab {
-	UUID=$1
+	UUID=$(f_UUID)
 	formato=$(lsblk -f | egrep $UUID | awk '{print $2}') 
 	echo "UUID=$UUID $directorio $formato defaults,usrquota,grpquota 0 1" >> /etc/fstab
 }
@@ -124,7 +124,7 @@ function f_añadir_fstab {
 function f_modificar_fstab_quota {
 	UUID=$(f_UUID)
 	if [[ $(egrep $UUID /etc/fstab;echo $?) = 1 ]]; then
-		f_añadir_fstab $UUID
+		f_añadir_fstab
 	else
 		sed -e '/'$UUID'/ !d' /etc/fstab > uuid.txt
 		opciones=$(sed -e '/'$UUID'/ !d' /etc/fstab | awk '{print $4}')
