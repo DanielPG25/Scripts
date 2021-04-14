@@ -75,6 +75,7 @@ function f_UUID {
 	UUID=$(blkid -o value -s UUID $nombre)
 	if [[ -z $UUID ]]
 		then
+			echo "Dime el nombre del dispositivo a montar"
 			f_nombre_dispositivo
 	else
 		echo $UUID
