@@ -24,16 +24,16 @@ function f_crear_directorio {
 #preguntará al usuario el nombre del dispositivo de bloques a montar
 
 function f_montar_dispositivo {
-	echo "Dime el nombre del dispositivo a montar. Debe estar precedido de /dev/"
+	echo "Dime el nombre del dispositivo a montar."
 	read dispositivo
 	mount $dispositivo $directorio
 }
 
 
 #La siguiente función usa la anterior para obtener el lugar de montaje. Usando también
-#el resultado de la anterior función,da un mensaje u otro. Nos indica así de si no existe 
-#el directorio introducido, de si existe pero no tiene nada montado, y si está montado, nos
-#devuelve el nombre del dispositivo. Los parámetros los recibe del script.
+#el resultado de la anterior función, nos dará el nombre del dispositivo montado
+#en el directorio. Si el directorio no existe lo creará y si el dispositivo no está
+#montado lo montará.
 
 function f_nombre_dispositivo {
 	f_existe_directorio
@@ -41,26 +41,13 @@ function f_nombre_dispositivo {
 	if [[ $resul = 0 ]]; then
 		var2=$(mount | egrep ' '$directorio' ' | awk '{print $1}')
 		if [[ -z $var2 ]]; then
-			echo "En ese directorio no hay montado nada"
-			echo "¿Quieres montar el dispositivo?(s/n)"
-			read respuesta
-			if [[ $respuesta = 's' ]];then
-				f_montar_dispositivo
-			else
-				exit 1
-			fi
+			echo "Dime el nombre del dispositivo a montar"
+			f_montar_dispositivo
 		else
 			echo $var2
 		fi
 	else
-		echo "El directorio no existe"
-		echo "¿Quieres crearlo?(s/n)"
-		read respuesta
-		if [[ $respuesta = 's' ]];then
-			f_crear_directorio
-		else
-			exit 1
-		fi
+		f_crear_directorio
 	fi
 
 }
@@ -121,6 +108,13 @@ function f_comprobar_paquete {
 	fi
 }
 
+function f_añadir_fstab {
+	UUID=$1
+	formato=$(lsblk -f | egrep $UUID | awk '{print $2}') 
+	echo "UUID=$UUID $directorio $formato defaults,usrquota,grpquota 0 1" >> /etc/fstab
+}
+
+
 #Esta función usa la función f_UUID para obtener la UUID de un determinado dispositivo montado
 #en un directorio. Hay que ser root para ello. Tras esto usa la variable obtenida con el comando 
 #sed para crear un fichero, modificarlo y después inyectárlo a un fichero fstab temporal.
@@ -129,13 +123,17 @@ function f_comprobar_paquete {
 
 function f_modificar_fstab_quota {
 	UUID=$(f_UUID)
-	sed -e '/'$UUID'/ !d' /etc/fstab > uuid.txt
-	opciones=$(sed -e '/'$UUID'/ !d' /etc/fstab | awk '{print $4}')
-	sed -i 's/'$opciones'/&,usrquota,grpquota/' uuid.txt
-	sed -e '/'$UUID'/ d' /etc/fstab > fstab1
-	cat uuid.txt >> fstab1
-	rm /etc/fstab uuid.txt
-	mv fstab1 /etc/fstab
+	if [[ $(egrep $UUID /etc/fstab;echo $?) = 1 ]]; then
+		f_añadir_fstab $UUID
+	else
+		sed -e '/'$UUID'/ !d' /etc/fstab > uuid.txt
+		opciones=$(sed -e '/'$UUID'/ !d' /etc/fstab | awk '{print $4}')
+		sed -i 's/'$opciones'/&,usrquota,grpquota/' uuid.txt
+		sed -e '/'$UUID'/ d' /etc/fstab > fstab1
+		cat uuid.txt >> fstab1
+		rm /etc/fstab uuid.txt
+		mv fstab1 /etc/fstab
+	fi
 	mount -o remount $directorio
 }
 
