@@ -134,7 +134,7 @@ function f_modificar_fstab_quota {
 		rm /etc/fstab uuid.txt
 		mv fstab1 /etc/fstab
 	fi
-	mount -o remount $directorio
+	mount -o remount $directorio &> /dev/null
 }
 
 
@@ -181,11 +181,11 @@ function f_comprobar_fichero_quota {
 function f_habilita_quota {
 	f_comprobar_fichero_quota
 	if [[ $? = 1 ]]; then
-		quotacheck -u $directorio
+		quotacheck -u $directorio &> /dev/null
 	elif [[ $(f_comprobar_fichero_quota;echo $?) = 2 ]]; then
-		quotacheck -g $directorio
+		quotacheck -g $directorio &> /dev/null
 	elif [[ $(f_comprobar_fichero_quota;echo $?) = 0 ]]; then
-		quotacheck -ugv	$directorio
+		quotacheck -ugv	$directorio &> /dev/null
 	else
 		echo "Los ficheros ya están creados"
 	fi
