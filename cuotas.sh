@@ -1,8 +1,11 @@
 #! /bin/env bash
 . ./libreria.sh
 
-#Este script configurará las cuotas en un dispositivo de bloques que se encuentre montado
-#y cuyo UUID aparezca el el fichero fstab.
+#Este script configura las cuotas en un dispositivo de bloques que se encuentre
+#en tu equipo. Para ello debes saber el directorio en el que quieres aplicar
+#las cuotas y el nombre del dispositivo. El nombre del dispositivo se dará
+#en formato /dev/nombre. Dicho dispositivo debe estar particionado y con 
+#un sistema de ficheros instalado o el script no funcionará.
 
 #El script empieza comprobando si eres root. Si no lo eres, te echa del script
 #avisándote de que no eres root.
@@ -17,10 +20,7 @@ f_comprobar_paquete $paquete2
 
 #A continuación usa la función f_UUID para obtener el UUID del dispositivo de
 #bloques que tienes montado en el directorio en el que quieres instaurar las
-#cuotas. Si todo va bien, te pregunta el directorio y te devuelve el UUID, pero
-#si no es así, te volverá a preguntar por el directorio, y entonces te dirá
-#cual es el problema: si no está creado el directorio o si no hay nada montado
-#en él.
+#cuotas. Si todo va bien, te pregunta el directorio y el nombre del dispositivo.
 echo "Dime el punto de montaje del dispositivo"
 read directorio
 echo "Dime el nombre del dispositivo"
@@ -28,9 +28,8 @@ read nombre
 f_comprobacion_inicial
 f_UUID
 
-#Tras esto, vamos a usar el UUID obtenido para modificar el fichero fstab. Para
-#que funcione, el dispositivo de bloques ya debe estar incluido en el fichero 
-#fstab.
+#Tras esto, vamos a usar el UUID obtenido para modificar el fichero fstab. Si el
+#dispositivo de bloques no está incluido en fstab, el script te lo incluye.
 
 f_modificar_fstab_quota
 

@@ -1,7 +1,7 @@
 
 
 #Primero vamos a comprobar si existe el directorio /QUOTA. Esta función
-#llama a una variable que será especificida por el script , y devolverá 1 si no existe y 0 si #existe.
+#llama a una variable que será especificida por el script , y devolverá 1 si no existe y 0 si existe.
 
 function f_existe_directorio {
 		if [[ -d $directorio ]]
@@ -98,7 +98,11 @@ function f_comprobar_paquete {
 	fi
 }
 
-function f_añadir_fstab {
+#Esta función añade al fichero fstab el dispositivo de bloques al que vamos a implantar las cuotas.
+#Para eelo utiliza el comando echo y una doble redirección para anexar al final del archivo la línea
+#correspondiente al dispositivo de bloques, con las opciones de cuotas ya añadidas.
+
+function f_anadir_fstab {
 	UUID=$(f_UUID)
 	formato=$(lsblk -f | egrep $UUID | awk '{print $2}') 
 	echo "UUID=$UUID $directorio $formato defaults,usrquota,grpquota 0 1" >> /etc/fstab
@@ -109,12 +113,13 @@ function f_añadir_fstab {
 #en un directorio. Hay que ser root para ello. Tras esto usa la variable obtenida con el comando 
 #sed para crear un fichero, modificarlo y después inyectárlo a un fichero fstab temporal.
 #Posteriormente se combinan los dos ficheros, se elimina el fichero antiguo y se cambia el 
-#nombre al temporal para que actúe como el nuevo. Tras esto vuelve a leer el fichro fstab.
+#nombre al temporal para que actúe como el nuevo. Tras esto vuelve a leer el fichro fstab. Si el
+#dispositivo no está incluido en el fichero fstab, lo incluye usando la función anterior.
 
 function f_modificar_fstab_quota {
 	UUID=$(f_UUID)
 	if [[ $(egrep $UUID /etc/fstab;echo $?) = 1 ]]; then
-		f_añadir_fstab
+		f_anadir_fstab
 	else
 		sed -e '/'$UUID'/ !d' /etc/fstab > uuid.txt
 		opciones=$(sed -e '/'$UUID'/ !d' /etc/fstab | awk '{print $4}')
@@ -129,7 +134,9 @@ function f_modificar_fstab_quota {
 
 
 #Con esta función comprobamos si los ficheros de quotas están en el directorio donde hemos montado 
-#las cuotas. Te informa de si están creados los ficheros de usuario,grupo o ninguno.
+#las cuotas. Te informa de si están creados los ficheros de usuario,grupo o ninguno. Devuelve 1 si está
+#creado el fichero de grupo,2 si está creado el de usuario,0 si no está creado ninguno y 3 si están
+#creados los dos.
 
 function f_comprobar_fichero_quota {
 	set $(ls $directorio)
@@ -167,6 +174,7 @@ function f_comprobar_fichero_quota {
 
 
 #Con esta función crearemos los ficheros necesarios para trabajar con las cuotas: aquota.user y #aquota.group. Primero usaremos la función la función anterior para averiguar si ya existen, y si #no es así crearlos. Tras esto habilitaremos las cuotas con el comando quotaon.
+#Usa el comando anterior para saber si los ficheros ya existen.
 
 function f_habilita_quota {
 	f_comprobar_fichero_quota
