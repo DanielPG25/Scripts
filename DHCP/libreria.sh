@@ -1,0 +1,59 @@
+#Esta función determina si eres root o no usando el comando whoami. Si lo 
+#eres devuelve 0, si no es así te echa del script, ya que no tendría sentido continuar.
+
+
+function f_soyroot {
+	set $(whoami)
+	if [[ $1 = 'root' ]]
+		then
+			return 0
+	else
+		echo "No eres root"
+		exit 1
+	fi
+}
+
+
+#Esta función necesita de un argumento. Le pasas el nombre del paquete, y si 
+#está instalado te lo indica. Si no es así te pregunta si quieres instalarlo.
+#Para instalar el paquete debes ser root.
+
+function f_comprobar_paquete {
+	if [[ $(dpkg -s $1) ]]
+		then
+			return 0
+	else
+		echo "El paquete no está instalado, ¿quieres instalarlo?(s/n)"
+		read confirmacion
+		if [[ $confirmacion = "s" ]]; then
+			f_instalar_paquete $1
+		else
+			exit 1
+		fi
+	fi
+}
+
+
+
+#Esta función instala el paquete que le añadas como argumento. Solo instala un paquete,
+#aunque dependiendo de la situación podría modificarse para que instalase varios
+
+
+function f_instalar_paquete {
+	apt update -y &> /dev/null && apt install -y $1 &> /dev/null
+}
+
+#Esta función muestra las interfaces para que el usuario pueda elegir una a la que 
+#aplicar el servidor dhcp. No requiere de argumentos de entrada.
+
+function f_mostrar_interfaces {
+	ip link show | awk 'NR % 2 == 1' | awk '{print $2}' | tr -d ':'
+}
+
+#La siguiente función comprueba si la interfaz dada a través de un argumento existe o no. Devolverá 0
+#si existe u otro número si no existe.
+
+
+function f_comprobar_interfaz {
+	ip link show | awk 'NR % 2 == 1' | awk '{print $2}' | tr -d ':' | egrep $interfaz
+}
