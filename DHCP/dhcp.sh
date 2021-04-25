@@ -11,14 +11,14 @@
 #Para empezar es necesario ser root para ejjecutar la mayoría de instrucciones de este
 #script, por lo que la siguiente función se asegurará de ello.
 
-#f_soyroot
+f_soyroot
 
 #A continuación, debemos asegurarnos que el paquete necesario "isc-dhcp-server", esta instalado,
 #y si no es así instalarlo. Se le dará opción al usuario de no instalarlo si no quiere,
 #pero si no quieres instalarlo se le echará del script, puesto no que no tendría sentido continuar.
 
-#paquete=isc-dhcp-server
-#f_comprobar_paquete $paquete
+paquete=isc-dhcp-server
+f_comprobar_paquete $paquete
 
 #Ahora vemos a mostrar por pantalla las interfaces que tenemos disponibles, para que el 
 #usuario pueda elegir a la que quiera aplicar el servidor dhcp. Si el usuario se equivoca
