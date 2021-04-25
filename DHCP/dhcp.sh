@@ -2,7 +2,7 @@
 . ./libreria.sh
 
 
-#El objetivo de este script es instalar y configurar un servidor dhcp plenamente
+#El objetivo de este script es instalar y configurar un servidor dhcp Ipv4 plenamente
 #operativo en un sistema operativo Debian 10. Solo se ha probado en este sistema,
 #por lo que no puedo asegurar su correcto funcionamiento en otros sistemas operativos
 #u otras versiones de debian.
@@ -39,6 +39,13 @@ while [[ $(f_comprobar_interfaz $interfaz;echo $?) != 0 ]]
 	done
 
 #Lo siguiente es comprobar si la interfaz elegida está levantada o bajada. Para ello usaremos 
-#la siguiente función.
+#la siguiente función. Si está levantada no hace nada, pero si no lo está pregunta al usuario
+#si desea levantarla. Si no es así, sale del script.
 
 f_levantar_interfaz
+
+
+#Con la siguiente función modificaremos el archivo /etc/default/isc-dhcp-server para añadir
+#la interfaz elegida antes. Si ya está añadida no hace nada, y si no es así, la añade.
+
+f_modificar_isc-dhcp-server

@@ -75,3 +75,14 @@ function f_levantar_interfaz {
 		fi
 	fi
 }
+
+
+#Esta función se utiliza para modificar el archivo /etc/default/isc-dhcp-server, insertándo
+#la interfaz a la que vamos a aplicar el servidor dhcp. Primero revisa si ya está configurado,
+#y si no es así, lo configura.
+
+function f_modificar_isc-dhcp-server {
+	if [[ $(cat /etc/default/isc-dhcp-server | egrep -i "INTERFACESv4" | egrep $interfaz > /dev/null;echo $?) != 0; then
+		sed -i 's/INTERFACESv4="/&'$interfaz'/' /etc/default/isc-dhcp-server
+	fi
+}
