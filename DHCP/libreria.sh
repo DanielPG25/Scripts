@@ -57,3 +57,21 @@ function f_mostrar_interfaces {
 function f_comprobar_interfaz {
 	ip link show | awk 'NR % 2 == 1' | awk '{print $2}' | tr -d ':' | egrep $interfaz > /dev/null
 }
+
+
+#Esta función detecta si la interfaz que has elegido está levantada o no, e informa al usuario.
+#Si no lo está le pregunta al usuario si quiere levantarla, si este responde que no, el script 
+#se acaba.
+
+function f_levantar_interfaz {
+	if [[ $(ip link show | egrep $interfaz | egrep -i 'state down' > /dev/null;echo $?) = 0 ]]; then
+		echo "La interfaz $interfaz está bajada. ¿Levantárla? (s/n)"
+		read confirmacion
+		if [[ $confirmacion = 's' ]]; then
+			ip link set $interfaz up
+			echo "Interfaz levantada"
+		else
+			exit 1
+		fi
+	fi
+}

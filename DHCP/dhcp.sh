@@ -21,7 +21,9 @@
 #f_comprobar_paquete $paquete
 
 #Ahora vemos a mostrar por pantalla las interfaces que tenemos disponibles, para que el 
-#usuario pueda elegir a la que quiera aplicar el servidor dhcp.
+#usuario pueda elegir a la que quiera aplicar el servidor dhcp. Si el usuario se equivoca
+#al escribir la interfaz o la interfaz no existe, te vuelve a pregutar hasta que elijas una
+#que exista
 
 echo "De las siguientes interafaces, escribe el nombre de a la que le quieras aplicar el servidor dhcp:"
 echo ""
@@ -35,3 +37,8 @@ while [[ $(f_comprobar_interfaz $interfaz;echo $?) != 0 ]]
 		echo "Compruebe la sintaxis e introduzca de nuevo la interfaz"
 		read interfaz
 	done
+
+#Lo siguiente es comprobar si la interfaz elegida está levantada o bajada. Para ello usaremos 
+#la siguiente función.
+
+f_levantar_interfaz
