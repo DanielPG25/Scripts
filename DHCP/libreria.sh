@@ -55,5 +55,5 @@ function f_mostrar_interfaces {
 
 
 function f_comprobar_interfaz {
-	ip link show | awk 'NR % 2 == 1' | awk '{print $2}' | tr -d ':' | egrep $interfaz
+	ip link show | awk 'NR % 2 == 1' | awk '{print $2}' | tr -d ':' | egrep $interfaz > /dev/null
 }

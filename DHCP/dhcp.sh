@@ -29,7 +29,7 @@ f_mostrar_interfaces
 echo ""
 read interfaz
 
-while [[ $(f_comprobar_interfaz $interfaz; echo $?) != "0" ]]
+while [[ $(f_comprobar_interfaz $interfaz;echo $?) != 0 ]]
 	do
 		echo "Esa interfaz no existe"
 		echo "Compruebe la sintaxis e introduzca de nuevo la interfaz"
