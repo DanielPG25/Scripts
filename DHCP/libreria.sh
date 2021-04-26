@@ -83,6 +83,6 @@ function f_levantar_interfaz {
 
 function f_modificar_isc-dhcp-server {
 	if [[ $(cat /etc/default/isc-dhcp-server | egrep -i "INTERFACESv4" | egrep $interfaz > /dev/null;echo $?) != 0 ]]; then
-		sed -i 's/INTERFACESv4="/&'$interfaz'/' /etc/default/isc-dhcp-server
+		sed -i 's/INTERFACESv4="/&'$interfaz' /' /etc/default/isc-dhcp-server
 	fi
 }
