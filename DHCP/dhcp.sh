@@ -49,3 +49,5 @@ f_levantar_interfaz
 #la interfaz elegida antes. Si ya está añadida no hace nada, y si no es así, la añade.
 
 f_modificar_isc-dhcp-server
+
+f_modificar_configuracion_global
