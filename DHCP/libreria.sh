@@ -86,3 +86,25 @@ function f_modificar_isc-dhcp-server {
 		sed -i 's/INTERFACESv4="/&'$interfaz' /' /etc/default/isc-dhcp-server
 	fi
 }
+
+
+
+function f_modificar_configuracion_global {
+	if [[ $(cat /etc/dhcp/dhcpd.conf | egrep -o "#authoritative" > /dev/null;echo $?) = 0 ]]; then
+		echo "Este servidor dhcp no esta funcionando como servidor principal de la red"
+		echo "No es obligatorio que sea principal para que funcione correctamente"
+		echo "¿Deseas hacerlo principal?(s/n)"
+		read confirmacion
+		if [[ $confirmacion = "s" ]];then
+			sed -i 's/#authoritative/authoritative/' /etc/dhcp/dhcpd.conf
+		fi
+	fi
+	echo "La configuración global de dns es la siguiente:"
+	cat /etc/dhcp/dhcpd.conf | egrep -m 2 "option domain-name"
+	echo "¿Desea cambiarla?(s/n)"
+	read confirmacion
+	if [[ $confirmacion = "s" ]];then
+		sed '/^option domain-name /d' /etc/dhcp/dhcpd.conf 
+		sed '/^option domain-name-servers /d' /etc/dhcp/dhcpd.conf 
+		
+}
