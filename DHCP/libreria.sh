@@ -104,19 +104,19 @@ function f_modificar_configuracion_global {
 	echo "¿Desea cambiarla?(s/n)"
 	read confirmacion
 	if [[ $confirmacion = "s" ]];then
-		sed '/^option domain-name /d' /etc/dhcp/dhcpd.conf 
-		sed '/^option domain-name-servers /d' /etc/dhcp/dhcpd.conf 
+		sed -i '/^option domain-name /d' /etc/dhcp/dhcpd.conf 
+		sed -i '/^option domain-name-servers /d' /etc/dhcp/dhcpd.conf 
 		echo "¿Qué nombre de dominio quiere meter en la configuración?"
 		read dom1
-		sed '/# option definitions/ a option domain-name "'$dom1'";'/etc/dhcp/dhcpd.conf
+		sed -i '/# option definitions/ a option domain-name "'$dom1'";' /etc/dhcp/dhcpd.conf
+		sed -i '/# option definitions/ a option domain-name-servers ;' /etc/dhcp/dhcpd.conf
 		echo "¿Cuántos servidores de nombres de dominio quieres meter en la configuración?"
 		read num1
-		var1=''
 		for i in $(seq 1 $num1)
 			do
-				echo "Dime el nombre del dominio $i"
-				read dom$i;
-				var1="$var1 $dom$i," 
+				echo "Dime el nombre del servidor $i"
+				read serv
+				sed -i 's/^option domain-name-servers /&'"$serv"' /' /etc/dhcp/dhcpd.conf
 			done;
-		sed '/# option definitions/ a option domain-name-servers '$var1';'
+	fi
 }
