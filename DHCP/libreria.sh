@@ -120,3 +120,11 @@ function f_modificar_configuracion_global {
 			done;
 	fi
 }
+
+
+#Con la siguiente función vamos a modificar el fichero /etc/dhcp/dhcpd.conf 
+#para insertar la configuración de la subnet que daremos por dhcp y sus opciones
+#Para ello iremos preguntando al usuario por cada una de las opciones y las iremos 
+#anexando una a una.
+
+cat /etc/dhcp/dhcpd.conf | awk '/subnet/,/\}/'
