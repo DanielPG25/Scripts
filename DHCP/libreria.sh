@@ -138,6 +138,7 @@ function f_comprobar_subnet {
 		else
 			echo "De acuerdo. Script finalizado"
 			exit 1
+		fi
 	fi
 }
 
@@ -147,12 +148,34 @@ function f_comprobar_subnet {
 #Para ello iremos preguntando al usuario por cada una de las opciones y las iremos 
 #anexando una a una.
 
-function f_añadir_subnet {
+function f_anadir_subnet {
 	echo "Digame la subnet en notación decimal puntuada (ejemplo: 192.168.0.0):"
-	touch axklmldhcp.txt
 	read ip
 	echo "Dígame la mascara de red en notación decimal puntuada: (ejemplo: 255.255.255.0):"
 	read mascara
-	sed -i '$a subnet '$ip' netmask '$mascara' {' axklmldhcp.txt
+	echo "subnet $ip netmask $mascara {" > axklmldhcp.txt
+	echo "Empecemos a configurar la subnet. Dígame el rango inferior de ip que va a repartir$
+        read inferior
+        echo "Ahora dígame el límite superior de ip que va a repartir el servidor: "
+        read superior
+        sed -i '$a \  range '$inferior' '$superior';' axklmldhcp.txt
+	echo "A partir de ahora configuraremos parámetros que son importantes, pero son opcional$
+        echo "¿Desea configurar la puerta de enlace? (s/n)"
+        read respuesta
+        if [[ $respuesta = "s" ]];then
+                echo "Dígame la dirección de la puerta de enlace (ej: 192.168.0.1):"
+                read puerta
+                sed -i '$a \  option routers '$puerta';' axklmldhcp.txt
+        else
+                echo "De acuerdo"
+        fi
+	echo "¿Desea configurar la mascara de red que otorgará el servidor? (s/n)"
+	read respuesta
+	if [[ $respuesta = "s" ]];then
+		echo "Dígame la mascara de red que otorgará el servidor dhcp (ej: 255.255.255.0):"
+		read submascara
+		sed -i '$a \  option subnet-mask '$submascara';' axklmldhcp.txt
+	else
+		echo "De acuerdo"
+	fi
 }
-
