@@ -147,5 +147,12 @@ function f_comprobar_subnet {
 #Para ello iremos preguntando al usuario por cada una de las opciones y las iremos 
 #anexando una a una.
 
-
+function f_añadir_subnet {
+	echo "Digame la subnet en notación decimal puntuada (ejemplo: 192.168.0.0):"
+	touch axklmldhcp.txt
+	read ip
+	echo "Dígame la mascara de red en notación decimal puntuada: (ejemplo: 255.255.255.0):"
+	read mascara
+	sed -i '$a subnet '$ip' netmask '$mascara' {' axklmldhcp.txt
+}
 
