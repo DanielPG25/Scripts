@@ -122,9 +122,30 @@ function f_modificar_configuracion_global {
 }
 
 
+#Con la siguiente función vamos a revisar el fichero /etc/dhcp/dhcpd.conf 
+#para comprobar si ya tiene una subnet creada. En caso positivo, se le muestra al
+#usuario la configuración de la subnet, y se le pregunta si desea continuar con
+#el script o finalizarlo.
+
+function f_comprobar_subnet {
+	if [[ $(cat /etc/dhcp/dhcpd.conf | awk '/^subnet/,/\}$/' | egrep subnet;echo $?) = 0 ]]; then
+		echo "Ya tiene creada la siguiente subnet: "
+		cat /etc/dhcp/dhcpd.conf | awk '/^subnet/,/\}$/'
+		echo "¿Desea continuar con el script? (s/n)"
+		read respuesta
+		if [[ $respuesta = 's' ]]; then
+			echo "De acuerdo, sigamos"
+		else
+			echo "De acuerdo. Script finalizado"
+			exit 1
+	fi
+}
+
+
 #Con la siguiente función vamos a modificar el fichero /etc/dhcp/dhcpd.conf 
 #para insertar la configuración de la subnet que daremos por dhcp y sus opciones
 #Para ello iremos preguntando al usuario por cada una de las opciones y las iremos 
 #anexando una a una.
 
-cat /etc/dhcp/dhcpd.conf | awk '/subnet/,/\}/'
+
+
