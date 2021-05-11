@@ -143,9 +143,10 @@ function f_comprobar_subnet {
 		read respuesta
 		if [[ $respuesta = 's' ]]; then
 			echo "De acuerdo, sigamos"
+			return 1
 		else
 			echo "De acuerdo, continuaremos con esta configuración"
-			return 1
+			return 0
 		fi
 	fi
 }
