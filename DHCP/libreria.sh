@@ -116,7 +116,11 @@ function f_modificar_configuracion_global {
 			do
 				echo "Dime el nombre del servidor $i"
 				read serv
-				sed -i 's/^option domain-name-servers /&'"$serv"' /' /etc/dhcp/dhcpd.conf
+				if [[ $i = $num1 ]]; then
+					sed -i 's/^option domain-name-servers /&'"$serv"' /' /etc/dhcp/dhcpd.conf
+				else
+					sed -i 's/^option domain-name-servers /&'"$serv"', /' /etc/dhcp/dhcpd.conf
+				fi
 			done;
 	fi
 }
