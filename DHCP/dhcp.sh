@@ -53,3 +53,18 @@ f_modificar_isc-dhcp-server
 f_modificar_configuracion_global
 
 f_anadir_subnet
+echo "La cofiguración creada es la siguiente:"
+cat axklmldhcp.txt
+echo "¿Es correcta? (s/n)"
+read confirmacion
+while [[ $confirmacion != "s" ]]
+	do
+		f_anadir_subnet
+		echo "La cofiguración creada es la siguiente:"
+		cat axklmldhcp.txt
+		echo "¿Es correcta? (s/n)"
+		read confirmacion
+	done;
+cat axklmldhcp.txt >> /etc/dhcp/dhcpd.conf
+rm -rf axklmldhcp.txt
+
