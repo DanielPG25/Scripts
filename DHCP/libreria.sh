@@ -154,12 +154,12 @@ function f_anadir_subnet {
 	echo "Dígame la mascara de red en notación decimal puntuada: (ejemplo: 255.255.255.0):"
 	read mascara
 	echo "subnet $ip netmask $mascara {" > axklmldhcp.txt
-	echo "Empecemos a configurar la subnet. Dígame el rango inferior de ip que va a repartir$
+	echo "Empecemos a configurar la subnet. Dígame el rango inferior de ip que va a repartir el servidor"
         read inferior
         echo "Ahora dígame el límite superior de ip que va a repartir el servidor: "
         read superior
         sed -i '$a \  range '$inferior' '$superior';' axklmldhcp.txt
-	echo "A partir de ahora configuraremos parámetros que son importantes, pero son opcional$
+	echo "A partir de ahora configuraremos parámetros que son importantes, pero son opcionales, así que no es necesario ponerlos para el funcionamiento del servidor"
         echo "¿Desea configurar la puerta de enlace? (s/n)"
         read respuesta
         if [[ $respuesta = "s" ]];then
@@ -197,7 +197,7 @@ function f_anadir_subnet {
                         do
                                 echo "Dime el nombre del servidor $i"
                                 read serv
-                                sed -i 's/^option domain-name-servers /&'"$serv"' /' axklmldhcp.txt
+                                sed -i 's/^option domain-name-servers /&'$serv' /' axklmldhcp.txt
                         done;
 	else
 		echo "De acuerdo"
@@ -217,5 +217,6 @@ function f_anadir_subnet {
 	echo "¿Cuál será el tiempo de préstamo máximo de la subred (en segundos)?"
 	read maxlease
 	sed -i '$a \  max-lease-time '$maxlease';' axklmldhcp.txt
+	sed -i '$a \}' axklmldhcp.txt
 	echo "Subred configurada"
 }
