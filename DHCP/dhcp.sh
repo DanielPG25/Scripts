@@ -50,21 +50,40 @@ f_levantar_interfaz
 
 f_modificar_isc-dhcp-server
 
+
+#La siguiente función modifica la configuración global del dns y la autoridad del servidor en la red. Primero muestra cual es la que está configurada
+#y después pregunta al usuario si desea cambiarla. Si es así la cambia según lo que el usuario responda.
 f_modificar_configuracion_global
 
-f_anadir_subnet
-echo "La cofiguración creada es la siguiente:"
-cat axklmldhcp.txt
-echo "¿Es correcta? (s/n)"
-read confirmacion
-while [[ $confirmacion != "s" ]]
-	do
-		f_anadir_subnet
-		echo "La cofiguración creada es la siguiente:"
-		cat axklmldhcp.txt
-		echo "¿Es correcta? (s/n)"
-		read confirmacion
-	done;
-cat axklmldhcp.txt >> /etc/dhcp/dhcpd.conf
-rm -rf axklmldhcp.txt
 
+#La siguiente función comprueba si ya hay alguna subred configurada y pregunta al usuario en caso de haberla si 
+#desea usar esa configuración. Si es así, inicia el servicio. Si no es asi, llama a otra función para crear la subred
+#y después inicia el servicio.
+
+f_comprobar_subnet
+if [[ $(echo $?) != 1 ]];then
+	f_anadir_subnet
+	echo "La cofiguración creada es la siguiente:"
+	cat axklmldhcp.txt
+	echo "¿Es correcta? (s/n)"
+	read confirmacion
+	while [[ $confirmacion != "s" ]]
+		do
+			f_anadir_subnet
+			echo "La cofiguración creada es la siguiente:"
+			cat axklmldhcp.txt
+			echo "¿Es correcta? (s/n)"
+			read confirmacion
+		done;
+	cat axklmldhcp.txt >> /etc/dhcp/dhcpd.conf
+	rm -rf axklmldhcp.txt
+fi
+
+systemctl start isc-dhcp-server.service
+
+if [[ $(echo $?) != 0 ]];then
+	echo "Se ha producido algún error al inicar el servicio"
+	echo "Revise la dirección ip de la tarjeta de red o ejecute el comando \"systemctl status isc-dhcp-server.service\" para revisar el problema y vuelva a intentarlo"
+fi
+
+echo "Servidor dhcp iniciado"

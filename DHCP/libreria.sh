@@ -87,7 +87,11 @@ function f_modificar_isc-dhcp-server {
 	fi
 }
 
-
+#Esta función modifica la configuración global del dns que otorga el servidor dhcp si no se pone una 
+#específica para la subred. Primero muestra la configuración que hay ya, y después pregunta al usuario si
+#desea cambiarla. Si es así, pregunta al usuario por cada uno de los parámetros y los configura según
+#lo que el usuario introduzca por teclado. También revisa si el servidor no está marcado como principal en
+#la red, y si no es así, pregunta al usuario si quiere que lo sea.
 
 function f_modificar_configuracion_global {
 	if [[ $(cat /etc/dhcp/dhcpd.conf | egrep -o "#authoritative" > /dev/null;echo $?) = 0 ]]; then
@@ -129,19 +133,19 @@ function f_modificar_configuracion_global {
 #Con la siguiente función vamos a revisar el fichero /etc/dhcp/dhcpd.conf 
 #para comprobar si ya tiene una subnet creada. En caso positivo, se le muestra al
 #usuario la configuración de la subnet, y se le pregunta si desea continuar con
-#el script o finalizarlo.
+#el script o si desea continuar con la configuración que ya tiene.
 
 function f_comprobar_subnet {
 	if [[ $(cat /etc/dhcp/dhcpd.conf | awk '/^subnet/,/\}$/' | egrep subnet;echo $?) = 0 ]]; then
 		echo "Ya tiene creada la siguiente subnet: "
 		cat /etc/dhcp/dhcpd.conf | awk '/^subnet/,/\}$/'
-		echo "¿Desea continuar con el script? (s/n)"
+		echo "¿Desea continuar con el script con esta configuración? (s/n)"
 		read respuesta
 		if [[ $respuesta = 's' ]]; then
 			echo "De acuerdo, sigamos"
 		else
-			echo "De acuerdo. Script finalizado"
-			exit 1
+			echo "De acuerdo, continuaremos con esta configuración"
+			return 1
 		fi
 	fi
 }
