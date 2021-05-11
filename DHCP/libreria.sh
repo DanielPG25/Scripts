@@ -211,4 +211,11 @@ function f_anadir_subnet {
 	else
 		echo "De acuerdo"
 	fi
+	echo "¿Cuál será el tiempo de préstamo (lease time) por defecto de la subred (en segundos)?"
+	read deflease
+	sed -i '$a \  default-lease-time '$deflease';' axklmldhcp.txt
+	echo "¿Cuál será el tiempo de préstamo máximo de la subred (en segundos)?"
+	read maxlease
+	sed -i '$a \  max-lease-time '$maxlease';' axklmldhcp.txt
+	echo "Subred configurada"
 }
