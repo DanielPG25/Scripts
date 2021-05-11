@@ -51,3 +51,5 @@ f_levantar_interfaz
 f_modificar_isc-dhcp-server
 
 f_modificar_configuracion_global
+
+f_anadir_subnet
