@@ -117,9 +117,9 @@ function f_modificar_configuracion_global {
 				echo "Dime el nombre del servidor $i"
 				read serv
 				if [[ $i = $num1 ]]; then
-					sed -i 's/^option domain-name-servers /&'"$serv"' /' /etc/dhcp/dhcpd.conf
-				else
 					sed -i 's/^option domain-name-servers /&'"$serv"', /' /etc/dhcp/dhcpd.conf
+				else
+					sed -i 's/^option domain-name-servers /&'"$serv"' /' /etc/dhcp/dhcpd.conf
 				fi
 			done;
 	fi
@@ -198,11 +198,16 @@ function f_anadir_subnet {
 		echo "¿Cuántos servidores de nombres de dominio quieres meter en la configuración?"
                 read num1
                 for i in $(seq 1 $num1)
-                        do
+			do
                                 echo "Dime el nombre del servidor $i"
                                 read serv
-                                sed -i 's/^option domain-name-servers /&'$serv' /' axklmldhcp.txt
+                                if [[ $i = $num1 ]]; then
+                                        sed -i 's/option domain-name-servers /&'"$serv"', /' axklmldhcp.txt
+                                else
+                                        sed -i 's/option domain-name-servers /&'"$serv"' /' axklmldhcp.txt
+                                fi
                         done;
+
 	else
 		echo "De acuerdo"
 	fi
