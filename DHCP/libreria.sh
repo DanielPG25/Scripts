@@ -178,4 +178,37 @@ function f_anadir_subnet {
 	else
 		echo "De acuerdo"
 	fi
+	echo "¿Desea configurar la búsqueda de dominios? (s/n)"
+	read respuesta
+	if [[ $respuesta = "s" ]];then
+		echo "¿Qué nombre de dominio desea introducir en la configuración?"
+		read dominio
+		sed -i '$a \  option domain-search \"'$dominio'\";' axklmldhcp.txt
+	else
+		echo "De acuerdo"
+	fi
+	echo "¿Desea configurar los sevidores de nombres de dominio? (s/n)"
+	read respuesta
+	if [[ $respuesta = "s" ]];then
+		sed -i '$a \  option domain-name-servers ;' axklmldhcp.txt
+		echo "¿Cuántos servidores de nombres de dominio quieres meter en la configuración?"
+                read num1
+                for i in $(seq 1 $num1)
+                        do
+                                echo "Dime el nombre del servidor $i"
+                                read serv
+                                sed -i 's/^option domain-name-servers /&'"$serv"' /' axklmldhcp.txt
+                        done;
+	else
+		echo "De acuerdo"
+	fi
+	echo "¿Desea introducir una dirección de broadcast? (s/n)"
+	read respuesta
+	if [[ $respuesta = "s" ]];then
+		echo "Introduzca la dirección de broadcast (ej: 192.168.0.255):"
+		read broadcast
+		sed -i '$a \  option broadcast-address '$broadcast';' axklmldhcp.txt
+	else
+		echo "De acuerdo"
+	fi
 }
