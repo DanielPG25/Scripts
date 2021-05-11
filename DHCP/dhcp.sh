@@ -58,7 +58,7 @@ f_modificar_configuracion_global
 
 #La siguiente función comprueba si ya hay alguna subred configurada y pregunta al usuario en caso de haberla si 
 #desea usar esa configuración. Si es así, inicia el servicio. Si no es asi, llama a otra función para crear la subred
-#y después inicia el servicio.
+#y después inicia el servicio. Si el servicio no se inicia con éxito avisa de ello al usuario y le da recomendaciones para encontrar el error.
 
 f_comprobar_subnet
 if [[ $(echo $?) != 1 ]];then
@@ -84,6 +84,6 @@ systemctl start isc-dhcp-server.service
 if [[ $(echo $?) != 0 ]];then
 	echo "Se ha producido algún error al inicar el servicio"
 	echo "Revise la dirección ip de la tarjeta de red o ejecute el comando \"systemctl status isc-dhcp-server.service\" para revisar el problema y vuelva a intentarlo"
+else
+	echo "Servidor dhcp iniciado"
 fi
-
-echo "Servidor dhcp iniciado"

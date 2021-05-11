@@ -136,16 +136,16 @@ function f_modificar_configuracion_global {
 #el script o si desea continuar con la configuración que ya tiene.
 
 function f_comprobar_subnet {
-	if [[ $(cat /etc/dhcp/dhcpd.conf | awk '/^subnet/,/\}$/' | egrep subnet;echo $?) = 0 ]]; then
+	if [[ $(cat /etc/dhcp/dhcpd.conf | awk '/^subnet/,/\}$/' | egrep subnet > /dev/null;echo $?) = 0 ]]; then
 		echo "Ya tiene creada la siguiente subnet: "
 		cat /etc/dhcp/dhcpd.conf | awk '/^subnet/,/\}$/'
-		echo "¿Desea continuar con el script con esta configuración? (s/n)"
+		echo "¿Desea iniciar el servidor con  esta configuración? (s/n)"
 		read respuesta
 		if [[ $respuesta = 's' ]]; then
-			echo "De acuerdo, sigamos"
+			echo "De acuerdo, iniciemos el servidor"
 			return 1
 		else
-			echo "De acuerdo, continuaremos con esta configuración"
+			echo "De acuerdo, crearemos otra subred"
 			return 0
 		fi
 	fi
