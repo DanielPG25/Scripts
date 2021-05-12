@@ -5,7 +5,7 @@
 #El objetivo de este script es instalar y configurar un servidor dhcp Ipv4 plenamente
 #operativo en un sistema operativo Debian 10. Solo se ha probado en este sistema,
 #por lo que no puedo asegurar su correcto funcionamiento en otros sistemas operativos
-#u otras versiones de debian.
+#u otras versiones de debian. Para su correcto funcionamiento es recomendable ejecutar el script #desde la misma carpeta en la que se encuentra.
 
 
 #Para empezar es necesario ser root para ejjecutar la mayoría de instrucciones de este
